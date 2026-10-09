@@ -4,20 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bouton de la Chance</title>
-    <!-- On charge Supabase -->
-    <script src="https://jsdelivr.net"></script>
+    <!-- CHANGEMENT ICI : Serveur alternatif UNPKG pour contourner le blocage de votre réseau -->
+    <script src="https://unpkg.com"></script>
     <style>
         body { text-align: center; font-family: sans-serif; margin-top: 100px; background-color: #f4f7f6; }
         .container { max-width: 500px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        button { padding: 15px 30px; font-size: 20px; cursor: pointer; border: none; background-color: #3498db; color: white; border-radius: 8px; }
-        #resultat { margin-top: 30px; font-size: 24px; font-weight: bold; }
+        button { padding: 15px 30px; font-size: 20px; cursor: pointer; border: none; background-color: #3498db; color: white; border-radius: 8px; font-weight: bold; }
+        button:active { transform: scale(0.98); }
+        #resultat { margin-top: 30px; font-size: 24px; font-weight: bold; min-height: 40px; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h1>Tentez votre chance !</h1>
-    <!-- Le bouton appelle la fonction de manière ultra-simple -->
+    <p>Cliquez sur le bouton ci-dessous :</p>
     <button id="monBouton">Déclencher le sort</button>
     <div id="resultat"></div>
 </div>
@@ -27,51 +28,46 @@
     const SUPABASE_URL = "https://xrchbheiugddqxzbdvbn.supabase.co/rest/v1/";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhyY2hiaGVpdWdkZHF4emJkdmJuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE1NTk5MzksImV4cCI6MjEwNzEzNTkzOX0.8CVzA6N1P3GzE1DqVwHTpQ9B8ITDWXsaODICKufne3g";
 
-    // Vérification de sécurité pour vous aider
-    if (SUPABASE_URL.includes("https://xrchbheiugddqxzbdvbn.supabase.co/rest/v1/") || SUPABASE_ANON_KEY.includes("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhyY2hiaGVpdWdkZHF4emJkdmJuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE1NTk5MzksImV4cCI6MjEwNzEzNTkzOX0.8CVzA6N1P3GzE1DqVwHTpQ9B8ITDWXsaODICKufne3g")) {
-        alert("Attention : Vous devez remplacer 'VOTRE_PROJET' et 'VOTRE_CLE_ANON_PUBLIC' par vos vraies clés Supabase dans le code !");
-    }
-
-    // Initialisation du client de la base de données
-    const clientSupabase = supabase.createClient(https://xrchbheiugddqxzbdvbn.supabase.co/rest/v1/, eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhyY2hiaGVpdWdkZHF4emJkdmJuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE1NTk5MzksImV4cCI6MjEwNzEzNTkzOX0.8CVzA6N1P3GzE1DqVwHTpQ9B8ITDWXsaODICKufne3g);
-
-    // Liaison sécurisée du bouton (plus besoin de onclick="" dans le HTML)
-    document.getElementById("monBouton").addEventListener("click", async () => {
+    document.addEventListener("DOMContentLoaded", () => {
+        
+        // Initialisation de Supabase
+        const clientSupabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const bouton = document.getElementById("monBouton");
         const div = document.getElementById('resultat');
-        div.innerHTML = "Vérification du destin...";
-        div.style.color = "#555";
 
-        try {
-            // Lecture de la table de contrôle
-            const { data, error } = await clientSupabase
-                .from('configuration')
-                .select('statut_bouton')
-                .limit(1)
-                .single();
+        bouton.addEventListener("click", async () => {
+            div.innerHTML = "🔮 Interrogation du destin en cours...";
+            div.style.color = "#555";
 
-            if (error) throw error;
+            try {
+                const { data, error } = await clientSupabase
+                    .from('configuration')
+                    .select('statut_bouton')
+                    .limit(1)
+                    .single();
 
-            const ordreAdmin = data.statut_bouton;
+                if (error) throw error;
 
-            // Application du résultat secret
-            if (ordreAdmin === "gagne") {
-                div.innerHTML = "🎉 Incroyable ! Vous avez GAGNÉ !";
-                div.style.color = "green";
-            } else if (ordreAdmin === "perdu") {
-                div.innerHTML = "❌ Dommage... Vous avez PERDU !";
-                div.style.color = "red";
-            } else {
-                // Mode aléatoire par défaut
-                const hasard = Math.random() > 0.5;
-                div.innerHTML = hasard ? "🎉 Incroyable ! Vous avez GAGNÉ !" : "❌ Dommage... Vous avez PERDU !";
-                div.style.color = hasard ? "green" : "red";
+                const ordreAdmin = data.statut_bouton;
+
+                if (ordreAdmin === "gagne") {
+                    div.innerHTML = "🎉 Incroyable ! Vous avez GAGNÉ !";
+                    div.style.color = "green";
+                } else if (ordreAdmin === "perdu") {
+                    div.innerHTML = "❌ Dommage... Vous avez PERDU !";
+                    div.style.color = "red";
+                } else {
+                    const hasard = Math.random() > 0.5;
+                    div.innerHTML = hasard ? "🎉 Incroyable ! Vous avez GAGNÉ !" : "❌ Dommage... Vous avez PERDU !";
+                    div.style.color = hasard ? "green" : "red";
+                }
+
+            } catch (err) {
+                console.error("Détail de l'erreur :", err);
+                div.innerHTML = "⚠️ Erreur de connexion à la base de données.";
+                div.style.color = "orange";
             }
-
-        } catch (err) {
-            console.error(err);
-            div.innerHTML = "Erreur : Impossible de lire Supabase. Vérifiez le nom de votre table ou vos clés API.";
-            div.style.color = "orange";
-        }
+        });
     });
 </script>
 </body>
