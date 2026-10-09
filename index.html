@@ -24,16 +24,16 @@
 
 <script>
     // ⚠️ METTEZ VOS CLÉS ICI EN LAISSANT LES GUILLEMETS ⚠️
-    const SUPABASE_URL = "https://VOTRE_PROJET.supabase.co";
-    const SUPABASE_ANON_KEY = "VOTRE_CLE_ANON_PUBLIC";
+    const SUPABASE_URL = "https://xrchbheiugddqxzbdvbn.supabase.co/rest/v1/";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhyY2hiaGVpdWdkZHF4emJkdmJuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE1NTk5MzksImV4cCI6MjEwNzEzNTkzOX0.8CVzA6N1P3GzE1DqVwHTpQ9B8ITDWXsaODICKufne3g";
 
     // Vérification de sécurité pour vous aider
-    if (SUPABASE_URL.includes("VOTRE_PROJET") || SUPABASE_ANON_KEY.includes("VOTRE_CLE")) {
+    if (SUPABASE_URL.includes("https://xrchbheiugddqxzbdvbn.supabase.co/rest/v1/") || SUPABASE_ANON_KEY.includes("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhyY2hiaGVpdWdkZHF4emJkdmJuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE1NTk5MzksImV4cCI6MjEwNzEzNTkzOX0.8CVzA6N1P3GzE1DqVwHTpQ9B8ITDWXsaODICKufne3g")) {
         alert("Attention : Vous devez remplacer 'VOTRE_PROJET' et 'VOTRE_CLE_ANON_PUBLIC' par vos vraies clés Supabase dans le code !");
     }
 
     // Initialisation du client de la base de données
-    const clientSupabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const clientSupabase = supabase.createClient(https://xrchbheiugddqxzbdvbn.supabase.co/rest/v1/, eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhyY2hiaGVpdWdkZHF4emJkdmJuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE1NTk5MzksImV4cCI6MjEwNzEzNTkzOX0.8CVzA6N1P3GzE1DqVwHTpQ9B8ITDWXsaODICKufne3g);
 
     // Liaison sécurisée du bouton (plus besoin de onclick="" dans le HTML)
     document.getElementById("monBouton").addEventListener("click", async () => {
