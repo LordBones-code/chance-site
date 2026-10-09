@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bouton de la Chance</title>
-    <!-- Chargement propre de Supabase via CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- On charge Supabase -->
+    <script src="https://jsdelivr.net"></script>
     <style>
         body { text-align: center; font-family: sans-serif; margin-top: 100px; background-color: #f4f7f6; }
         .container { max-width: 500px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
@@ -17,7 +17,8 @@
 
 <div class="container">
     <h1>Tentez votre chance !</h1>
-    <button onclick="tenterChance()">Déclencher le sort</button>
+    <!-- Le bouton appelle la fonction de manière ultra-simple -->
+    <button id="monBouton">Déclencher le sort</button>
     <div id="resultat"></div>
 </div>
 
@@ -26,17 +27,22 @@
     const SUPABASE_URL = "https://VOTRE_PROJET.supabase.co";
     const SUPABASE_ANON_KEY = "VOTRE_CLE_ANON_PUBLIC";
 
-    // Initialisation corrigée (sans le @)
-    const { createClient } = supabase;
-    const clientSupabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    // Vérification de sécurité pour vous aider
+    if (SUPABASE_URL.includes("VOTRE_PROJET") || SUPABASE_ANON_KEY.includes("VOTRE_CLE")) {
+        alert("Attention : Vous devez remplacer 'VOTRE_PROJET' et 'VOTRE_CLE_ANON_PUBLIC' par vos vraies clés Supabase dans le code !");
+    }
 
-    async function tenterChance() {
+    // Initialisation du client de la base de données
+    const clientSupabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // Liaison sécurisée du bouton (plus besoin de onclick="" dans le HTML)
+    document.getElementById("monBouton").addEventListener("click", async () => {
         const div = document.getElementById('resultat');
-        div.innerHTML = "Vérification...";
+        div.innerHTML = "Vérification du destin...";
         div.style.color = "#555";
 
         try {
-            // Lecture de la table
+            // Lecture de la table de contrôle
             const { data, error } = await clientSupabase
                 .from('configuration')
                 .select('statut_bouton')
@@ -47,6 +53,7 @@
 
             const ordreAdmin = data.statut_bouton;
 
+            // Application du résultat secret
             if (ordreAdmin === "gagne") {
                 div.innerHTML = "🎉 Incroyable ! Vous avez GAGNÉ !";
                 div.style.color = "green";
@@ -54,6 +61,7 @@
                 div.innerHTML = "❌ Dommage... Vous avez PERDU !";
                 div.style.color = "red";
             } else {
+                // Mode aléatoire par défaut
                 const hasard = Math.random() > 0.5;
                 div.innerHTML = hasard ? "🎉 Incroyable ! Vous avez GAGNÉ !" : "❌ Dommage... Vous avez PERDU !";
                 div.style.color = hasard ? "green" : "red";
@@ -61,10 +69,10 @@
 
         } catch (err) {
             console.error(err);
-            div.innerHTML = "Erreur : Impossible de lire la base de données. Vérifiez vos clés et le nom de votre table.";
+            div.innerHTML = "Erreur : Impossible de lire Supabase. Vérifiez le nom de votre table ou vos clés API.";
             div.style.color = "orange";
         }
-    }
+    });
 </script>
 </body>
 </html>
