@@ -3,42 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Le Bouton de la Chance Connecté</title>
-    <!-- Chargement de la bibliothèque Supabase officielle -->
-    <script src="https://jsdelivr.net"></script>
+    <title>Bouton de la Chance</title>
+    <!-- Chargement propre de Supabase via CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        body { text-align: center; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin-top: 100px; background-color: #f4f7f6; }
+        body { text-align: center; font-family: sans-serif; margin-top: 100px; background-color: #f4f7f6; }
         .container { max-width: 500px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        button { padding: 15px 30px; font-size: 20px; cursor: pointer; border: none; background-color: #3498db; color: white; border-radius: 8px; transition: 0.2s; }
-        button:hover { background-color: #2980b9; transform: scale(1.05); }
-        #resultat { margin-top: 30px; font-size: 24px; font-weight: bold; min-height: 40px; }
+        button { padding: 15px 30px; font-size: 20px; cursor: pointer; border: none; background-color: #3498db; color: white; border-radius: 8px; }
+        #resultat { margin-top: 30px; font-size: 24px; font-weight: bold; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h1>Tentez votre chance !</h1>
-    <p>Appuyez sur le bouton pour savoir si vous avez gagné.</p>
     <button onclick="tenterChance()">Déclencher le sort</button>
     <div id="resultat"></div>
 </div>
 
 <script>
-    // ⚠️ REMPLACEZ CES DEUX LIGNES PAR VOS INFOS SUPABASE ⚠️
-    const SUPABASE_URL = "https://xrchbheiugddqxzbdvbn.supabase.co/rest/v1/";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhyY2hiaGVpdWdkZHF4emJkdmJuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE1NTk5MzksImV4cCI6MjEwNzEzNTkzOX0.8CVzA6N1P3GzE1DqVwHTpQ9B8ITDWXsaODICKufne3g";
+    // ⚠️ METTEZ VOS CLÉS ICI EN LAISSANT LES GUILLEMETS ⚠️
+    const SUPABASE_URL = "https://VOTRE_PROJET.supabase.co";
+    const SUPABASE_ANON_KEY = "VOTRE_CLE_ANON_PUBLIC";
 
-    // Connexion à Supabase
-    const supabase = @supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    // Initialisation corrigée (sans le @)
+    const { createClient } = supabase;
+    const clientSupabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     async function tenterChance() {
         const div = document.getElementById('resultat');
-        div.innerHTML = "Vérification du destin...";
+        div.innerHTML = "Vérification...";
         div.style.color = "#555";
 
         try {
-            // On va chercher l'ordre de l'admin dans la base de données
-            const { data, error } = await supabase
+            // Lecture de la table
+            const { data, error } = await clientSupabase
                 .from('configuration')
                 .select('statut_bouton')
                 .limit(1)
@@ -48,23 +47,21 @@
 
             const ordreAdmin = data.statut_bouton;
 
-            // Application du résultat selon votre choix secret
             if (ordreAdmin === "gagne") {
                 div.innerHTML = "🎉 Incroyable ! Vous avez GAGNÉ !";
-                div.style.color = "#2ecc71";
+                div.style.color = "green";
             } else if (ordreAdmin === "perdu") {
                 div.innerHTML = "❌ Dommage... Vous avez PERDU !";
-                div.style.color = "#e74c3c";
+                div.style.color = "red";
             } else {
-                // Si c'est sur "aleatoire", on laisse faire un vrai hasard (50/50)
                 const hasard = Math.random() > 0.5;
                 div.innerHTML = hasard ? "🎉 Incroyable ! Vous avez GAGNÉ !" : "❌ Dommage... Vous avez PERDU !";
-                div.style.color = hasard ? "#2ecc71" : "#e74c3c";
+                div.style.color = hasard ? "green" : "red";
             }
 
         } catch (err) {
             console.error(err);
-            div.innerHTML = "Erreur de connexion au serveur de chance.";
+            div.innerHTML = "Erreur : Impossible de lire la base de données. Vérifiez vos clés et le nom de votre table.";
             div.style.color = "orange";
         }
     }
